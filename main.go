@@ -90,7 +90,13 @@ var msg2 = &discordgo.MessageSend{
 
 func onNotWorkey(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if notWorkeyRegex.FindString(m.Content) != "" {
-		s.ChannelMessageSendComplex(m.ChannelID, msg2)
+		_, err := s.ChannelMessageSendComplex(m.ChannelID, msg2)
+		if err != nil {
+			fmt.Println(err)
+		}
+		if err := s.MessageReactionAdd(m.ChannelID, m.ID, "✅"); err != nil {
+			fmt.Println(err)
+		}
 	}
 }
 
@@ -122,6 +128,9 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		if dm != nil && err == nil {
 			_, err = s.ChannelMessageSendComplex(dm.ID, msg1)
 			if err == nil {
+				if err := s.MessageReactionAdd(m.ChannelID, m.ID, "✅"); err != nil {
+					fmt.Println(err)
+				}
 				return
 			}
 		}
@@ -133,6 +142,10 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		_, err = s.ChannelMessageSendComplex(m.ChannelID, msg1)
 		msg1.Reference = nil
 		if err != nil {
+			fmt.Println(err)
+		}
+
+		if err := s.MessageReactionAdd(m.ChannelID, m.ID, "✅"); err != nil {
 			fmt.Println(err)
 		}
 	}
