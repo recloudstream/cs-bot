@@ -35,10 +35,10 @@ func main() {
 	<-c
 }
 
-var helpRegex = regexp.MustCompile("(?imsU)where|how|hwo|i need|i can([' ]|no)?t|help|list|please|plz|can (someone|anyone)|((is|does)(n[ ']?t| not) work)")
-var subjectRegex = regexp.MustCompile("(?imsU)(source|repo|(cloud ?stream)|ext[a-z]{3,10}ons?|short ?code|re[a-z]{1,20}tor(y|ies)|provider)")
+var helpRegex = regexp.MustCompile("(?imsU)where|how|hwo|i need|i can([' ]|no)?t|help|please|plz|can (someone|anyone)|((((is|does)(n[ ']?t| not)|not) work)|broke)")
+var subjectRegex = regexp.MustCompile("(?imsU)(source|repo|(cloud ?stream)|ext[a-z]{3,10}ons?|short ?code|re[a-z]{1,20}tor(y|ies)|provider|(web)?site)")
 var cmdRegex = regexp.MustCompile(`^[!\$\/\.](repos?|ext[a-z]{0,15}|list|re[a-z]{0,5}tor(y|ies)|links?|providers?)$`)
-var notWorkeyRegex = regexp.MustCompile("(?imsU)((is|does)(n[ ']?t| not) work)|broke")
+var notWorkeyRegex = regexp.MustCompile("(?imsU)(((is|does)(n[ ']?t| not)|not) work)|broke")
 
 func askedForHelp(msg string) bool {
 	str1 := helpRegex.FindString(msg)
