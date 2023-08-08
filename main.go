@@ -35,10 +35,10 @@ func main() {
 	<-c
 }
 
-var helpRegex = regexp.MustCompile("(?imsU)(where|how|hwo|i need|i can[' ]?t|help|it doesn[' ]?t|list|please|plz|can (someone|anyone))")
+var helpRegex = regexp.MustCompile("(?imsU)where|how|hwo|i need|i can([' ]|no)?t|help|list|please|plz|can (someone|anyone)|((is|does)(n[ ']?t| not) work)")
 var subjectRegex = regexp.MustCompile("(?imsU)(source|repo|(cloud ?stream)|ext[a-z]{3,10}ons?|short ?code|re[a-z]{1,20}tor(y|ies)|provider)")
 var cmdRegex = regexp.MustCompile(`^[!\$\/\.](repos?|ext[a-z]{0,15}|list|re[a-z]{0,5}tor(y|ies)|links?|providers?)$`)
-var notWorkeyRegex = regexp.MustCompile("(?imsU)((doesn[ ']?t|not) work(in?g|y))|broke")
+var notWorkeyRegex = regexp.MustCompile("(?imsU)((is|does)(n[ ']?t| not) work)|broke")
 
 func askedForHelp(msg string) bool {
 	str1 := helpRegex.FindString(msg)
@@ -88,7 +88,7 @@ var msg2 = &discordgo.MessageSend{
 	},
 }
 
-func onNotWorkey(s *discordgo.Session, m *discordgo.MessageCreate) {
+func onNotWorkey(s *discordgo.Session, m *discordgo.MessageCreate) bool {
 	if notWorkeyRegex.FindString(m.Content) != "" {
 		_, err := s.ChannelMessageSendComplex(m.ChannelID, msg2)
 		if err != nil {
@@ -97,7 +97,9 @@ func onNotWorkey(s *discordgo.Session, m *discordgo.MessageCreate) {
 		if err := s.MessageReactionAdd(m.ChannelID, m.ID, "✅"); err != nil {
 			fmt.Println(err)
 		}
+		return true
 	}
+	return false
 }
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -107,8 +109,11 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	for _, mention := range m.Mentions {
 		if mention.ID == s.State.User.ID {
-			onNotWorkey(s, m)
-			break
+			if onNotWorkey(s, m) {
+				return
+			} else {
+				break
+			}
 		}
 	}
 
