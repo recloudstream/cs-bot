@@ -118,7 +118,7 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	channel, err := s.Channel(m.ChannelID)
-	if err != nil && channel.Type == discordgo.ChannelTypeDM {
+	if err == nil && channel != nil && channel.Type == discordgo.ChannelTypeDM {
 		onNotWorkey(s, m)
 		return
 	}
