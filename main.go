@@ -129,6 +129,17 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	if askedForHelp(m.Content) || cmdRegex.MatchString(m.Content) {
+		for _, v := range m.Member.Roles {
+			if v == "878349160678559745" {
+				return
+			}
+			if v == "737726773567029419" {
+				return
+			}
+			if v == "870761275846701097" {
+				return
+			}
+		}
 		dm, err := s.UserChannelCreate(m.Author.ID)
 		if dm != nil && err == nil {
 			_, err = s.ChannelMessageSendComplex(dm.ID, msg1)
